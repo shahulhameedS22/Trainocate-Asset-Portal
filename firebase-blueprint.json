@@ -1,0 +1,190 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["admin", "manager", "staff"] },
+        "department": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Asset": {
+      "title": "Asset",
+      "description": "IT hardware, software or equipment asset record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "assetTag": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 256 },
+        "category": { "type": "string", "maxLength": 64 },
+        "model": { "type": "string", "maxLength": 128 },
+        "serialNumber": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["available", "assigned", "borrowed", "maintenance", "retired"] },
+        "condition": { "type": "string", "enum": ["excellent", "good", "fair", "poor"] },
+        "location": { "type": "string", "maxLength": 128 },
+        "assignedToUserId": { "type": "string", "maxLength": 128 },
+        "assignedToName": { "type": "string", "maxLength": 128 },
+        "purchaseDate": { "type": "string", "maxLength": 32 },
+        "purchaseCost": { "type": "number" },
+        "warrantyExpiry": { "type": "string", "maxLength": 32 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "assetTag", "name", "category", "status"]
+    },
+    "BorrowRecord": {
+      "title": "BorrowRecord",
+      "description": "Checkout and loan record for an asset",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "assetId": { "type": "string", "maxLength": 128 },
+        "assetTag": { "type": "string", "maxLength": 64 },
+        "assetName": { "type": "string", "maxLength": 256 },
+        "borrowerId": { "type": "string", "maxLength": 128 },
+        "borrowerName": { "type": "string", "maxLength": 128 },
+        "borrowerEmail": { "type": "string", "maxLength": 256 },
+        "borrowDate": { "type": "string", "maxLength": 32 },
+        "dueDate": { "type": "string", "maxLength": 32 },
+        "returnDate": { "type": "string", "maxLength": 32 },
+        "status": { "type": "string", "enum": ["active", "returned", "overdue"] },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "assetId", "assetTag", "borrowerName", "borrowDate", "dueDate", "status"]
+    },
+    "Issue": {
+      "title": "Issue",
+      "description": "Reported hardware or software problem on an asset",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "assetId": { "type": "string", "maxLength": 128 },
+        "assetTag": { "type": "string", "maxLength": 64 },
+        "assetName": { "type": "string", "maxLength": 256 },
+        "title": { "type": "string", "maxLength": 256 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved", "closed"] },
+        "reportedBy": { "type": "string", "maxLength": 128 },
+        "reportedByName": { "type": "string", "maxLength": 128 },
+        "reportedAt": { "type": "string" },
+        "resolvedAt": { "type": "string", "maxLength": 32 },
+        "resolutionNotes": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["id", "assetId", "title", "priority", "status", "reportedBy"]
+    },
+    "Maintenance": {
+      "title": "Maintenance",
+      "description": "Scheduled maintenance, service or repair ticket",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "assetId": { "type": "string", "maxLength": 128 },
+        "assetTag": { "type": "string", "maxLength": 64 },
+        "assetName": { "type": "string", "maxLength": 256 },
+        "title": { "type": "string", "maxLength": 256 },
+        "type": { "type": "string", "enum": ["routine", "repair", "upgrade", "inspection"] },
+        "scheduledDate": { "type": "string", "maxLength": 32 },
+        "completedDate": { "type": "string", "maxLength": 32 },
+        "cost": { "type": "number" },
+        "technician": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["scheduled", "in_progress", "completed", "cancelled"] }
+      },
+      "required": ["id", "assetId", "title", "type", "scheduledDate", "status"]
+    },
+    "AssetRequest": {
+      "title": "AssetRequest",
+      "description": "Request submitted by user for equipment or software",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "requesterId": { "type": "string", "maxLength": 128 },
+        "requesterName": { "type": "string", "maxLength": 128 },
+        "requesterEmail": { "type": "string", "maxLength": 256 },
+        "assetType": { "type": "string", "maxLength": 128 },
+        "reason": { "type": "string", "maxLength": 1000 },
+        "urgency": { "type": "string", "enum": ["low", "medium", "high"] },
+        "neededBy": { "type": "string", "maxLength": 32 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "adminNotes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "requesterId", "assetType", "reason", "urgency", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Historical audit trail of asset activities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "action": { "type": "string", "maxLength": 128 },
+        "entityType": { "type": "string", "maxLength": 64 },
+        "entityId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "performedByName": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "action", "entityType", "timestamp"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Staff member directory entry for asset assignments",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "department": { "type": "string", "maxLength": 128 },
+        "jobTitle": { "type": "string", "maxLength": 128 },
+        "location": { "type": "string", "maxLength": 128 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "status": { "type": "string", "enum": ["active", "inactive"] }
+      },
+      "required": ["id", "name", "email", "department", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and credentials"
+    },
+    "/assets/{assetId}": {
+      "schema": "Asset",
+      "description": "Company physical and software IT assets"
+    },
+    "/borrows/{borrowId}": {
+      "schema": "BorrowRecord",
+      "description": "Borrow and return checkout logs"
+    },
+    "/issues/{issueId}": {
+      "schema": "Issue",
+      "description": "Reported hardware and software issues"
+    },
+    "/maintenance/{maintenanceId}": {
+      "schema": "Maintenance",
+      "description": "Maintenance and servicing logs"
+    },
+    "/requests/{requestId}": {
+      "schema": "AssetRequest",
+      "description": "Employee asset procurement and allocation requests"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Audit trails for asset mutations"
+    },
+    "/employees/{employeeId}": {
+      "schema": "Employee",
+      "description": "Company staff directory for asset custody"
+    }
+  }
+}

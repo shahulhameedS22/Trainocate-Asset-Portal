@@ -1,0 +1,11 @@
+{
+  "name": "Asset Portal",
+  "description": "IT asset management portal for securely managing company assets, employees, assignments, borrowing and returns, maintenance, issues, and records.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
+

@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "haris26255@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isManagerOrAdmin() {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager')
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    match /assets/{assetId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /borrows/{borrowId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /issues/{issueId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /maintenance/{maintenanceId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /requests/{requestId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /employees/{employeeId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
